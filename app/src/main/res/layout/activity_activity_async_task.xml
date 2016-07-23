@@ -6,6 +6,11 @@
     android:orientation="vertical"
     tools:context="wp.asynctaskdemo.ActivityAsyncTask">
 
+    <Button
+        android:id="@+id/stop_async_task_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Stoooooooooop asynctask"/>
     <TextView
         android:id="@+id/tv"
         android:layout_width="match_parent"

@@ -14,6 +14,7 @@ public class ActivityAsyncTask extends AppCompatActivity {
     TextView mPro;
     MyAsyncTask myAsyncTask;
     ProgressBar mPb;
+    private Button mStopAsyncTaskButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,15 +24,25 @@ public class ActivityAsyncTask extends AppCompatActivity {
         mTv = (TextView) findViewById(R.id.tv);
         mPb = (ProgressBar) findViewById(R.id.pb);
         mPro = (TextView) findViewById(R.id.tv_progress);
-        myAsyncTask = new MyAsyncTask();
+
         mBt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                myAsyncTask = new MyAsyncTask();
                 //启动异步任务,需要调用该方法
                 myAsyncTask.execute();
                 mBt.setEnabled(false);
+                mPro.setVisibility(View.VISIBLE);
 
                 //可以用myAsyncTask.cancel()取消异步任务
+            }
+        });
+
+        mStopAsyncTaskButton = (Button) findViewById(R.id.stop_async_task_button);
+        mStopAsyncTaskButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                myAsyncTask.cancel(true);
             }
         });
     }
@@ -58,6 +69,9 @@ public class ActivityAsyncTask extends AppCompatActivity {
         @Override
         protected String doInBackground(Void... params) {
             for (int i = 10; i <= 100; i += 10) {
+                if (isCancelled()) {
+                    return "canceled";
+                }
                 try {
                     Thread.sleep(1000);
 
@@ -84,6 +98,16 @@ public class ActivityAsyncTask extends AppCompatActivity {
             mPb.setVisibility(View.VISIBLE);
             mPb.setProgress(values[0]);
             mPro.setText("当前进度:" + values[0] + "%");
+
+        }
+
+        @Override
+        protected void onCancelled() {
+            super.onCancelled();
+            mPb.setVisibility(View.INVISIBLE);
+            mPro.setVisibility(View.INVISIBLE);
+            mBt.setEnabled(true);
+            mTv.setText("canceled");
 
         }
 
